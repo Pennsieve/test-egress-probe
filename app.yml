@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://schemas.pennsieve.io/app-manifest/v1.json
+schemaVersion: "1.0"
+application:
+  name: Test egress probe
+  description: A test app for the compute node matrix. It tries to reach a few URLs and reports which it could, so a run shows whether a step on this node has internet.
+  type: processor
+  tags: [test]
+runtime:
+  cpu: 256
+  memory: 512
+  # The image serves both (processor/entry.py).
+  computeTypes:
+    - standard
+    - lambda
+parameters:
+  - name: URLS
+    type: string
+    description: Comma-separated URLs to GET, each with a 10 s timeout.
+    defaultValue: https://pypi.org/simple/,https://example.com
+    required: false
+inputs:
+  - name: data
+    description: Not read; the probe needs no input.
+    mediaTypes: []
+outputs:
+  - name: results
+    description: egress.json, what each URL answered.
+    mediaTypes: []
+review:
+  version: 1
+  inputs:
+    data:
+      files: [sample-input/*]
