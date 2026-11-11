@@ -25,7 +25,7 @@ def get(url, timeout=3, method="GET", headers=None):
 
 # The probe version doubles as the cache key: a RUN step whose text has not
 # changed is served from the registry build cache and never runs.
-say("probe", "v0.2.2")
+say("probe", "v0.2.4")
 say("hostname", socket.gethostname())
 say("pid1", open("/proc/1/comm").read().strip())
 say("env", sorted(k for k in os.environ))
@@ -42,8 +42,7 @@ say("buildkit socket", os.path.exists("/run/buildkit/buildkitd.sock"))
 say("docker socket", os.path.exists("/var/run/docker.sock"))
 say("internet https", get("https://example.com/", timeout=5))
 say("internet pypi", get("https://pypi.org/simple/pip/", timeout=5))
-try:
-    # DNS Firewall allow-list (app-deploy-service build-vpc.tf): listed names
+# DNS Firewall allow-list (app-deploy-service build-vpc.tf): listed names
 # resolve, the rest get NXDOMAIN. Security group: only 80 and 443 out.
 def resolve(host):
     try:
@@ -65,7 +64,8 @@ say("port 22 github.com", connect("github.com", 22))
 say("port 443 github.com", connect("github.com", 443))
 say("port 8080 1.1.1.1", connect("1.1.1.1", 8080))
 say("port 53 1.1.1.1", connect("1.1.1.1", 53))
-say("interfaces", subprocess.run(["sh", "-c", "cat /proc/net/dev | tail -n +3 | awk '{print $1}' | tr '\\n' ' '"], capture_output=True, text=True).stdout.strip())
+try:
+    say("interfaces", subprocess.run(["sh", "-c", "cat /proc/net/dev | tail -n +3 | awk '{print $1}' | tr '\\n' ' '"], capture_output=True, text=True).stdout.strip())
     say("routes", subprocess.run(["sh", "-c", "cat /proc/net/route | tail -n +2 | awk '{print $1, $2, $3}' | tr '\\n' ';'"], capture_output=True, text=True).stdout.strip())
     say("mounts", subprocess.run(["sh", "-c", "cat /proc/self/mounts | awk '{print $2}' | head -40 | tr '\\n' ' '"], capture_output=True, text=True).stdout.strip())
     say("processes", subprocess.run(["sh", "-c", "ls /proc | grep -E '^[0-9]+$' | wc -l"], capture_output=True, text=True).stdout.strip())
