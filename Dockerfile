@@ -25,7 +25,7 @@ def get(url, timeout=3, method="GET", headers=None):
 
 # The probe version doubles as the cache key: a RUN step whose text has not
 # changed is served from the registry build cache and never runs.
-say("probe", "v0.2.5")
+say("probe", "v0.2.6")
 say("hostname", socket.gethostname())
 say("pid1", open("/proc/1/comm").read().strip())
 say("env", sorted(k for k in os.environ))
